@@ -5,3 +5,5 @@
 /BestInvest.API/.vs/BestInvest.API
 /BestInvest.API/bin/Debug/net6.0
 /BestInvest.API/obj
+/BestInvest.API/DAL/LocalDB/BestInvestDB_log.ldf
+/BestInvest.API/DAL/LocalDB/BestInvestDB.mdf

@@ -1,23 +1,48 @@
-using BestInvest.API.EF;
+using BestInvest.API.BLL.Interfaces;
+using BestInvest.API.BLL.Services;
+using BestInvest.API.DAL.EF;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddMvc();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(
         builder => builder.WithOrigins("http://localhost:4200")); // url of the frontend
 });
 
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddControllers();
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+}
+).AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ForStartuper", policyBuilder => policyBuilder.RequireClaim("Role", "startuper"));
+    options.AddPolicy("ForInvestor", policyBuilder => policyBuilder.RequireClaim("Role", "investor"));
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddTransient<AppDbContext>();
+builder.Services.AddTransient<IdentityService>();
+builder.Services.AddTransient<IAccountService, AccountService>();
+builder.Services.AddTransient<IStartuperService, StartuperService>();
 
 var app = builder.Build();
 
@@ -30,13 +55,19 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseCors();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();
