@@ -1,4 +1,5 @@
-﻿using BestInvest.API.DAL.Entities;
+﻿using BestInvest.API.BLL.DTO;
+using BestInvest.API.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
@@ -15,7 +16,37 @@ namespace BestInvest.API.BLL.Services
             this.signInManager = signInManager;
         }
 
-        public async Task<bool> CreateUserAsync(Account account)
+        public async Task<bool> UpdateUserAsync(ClaimsPrincipal user, string email, string login)
+        {
+            var currentUser = await GetCurrentUserAsync(user);
+
+            currentUser.Email = email;
+            currentUser.UserName = login;
+
+            var result = await userManager.UpdateAsync(currentUser);
+            return result.Succeeded;
+        }
+
+        public async Task<string> ChangePasswordAsync(IdentityUser user, ChangePasswordDTO changePasswordDTO)
+        {
+            var result = await userManager
+                .ChangePasswordAsync(user, changePasswordDTO.OldPassword, changePasswordDTO.NewPassword);
+
+            string newPasswordHash = null;
+            if (result.Succeeded)
+            {
+                newPasswordHash = user.PasswordHash;
+            }
+
+            return newPasswordHash;
+        }
+
+        public async Task<IdentityUser> GetCurrentUserAsync(ClaimsPrincipal user)
+        {
+            return await userManager.GetUserAsync(user);
+        }
+
+        public async Task<bool> CreateAsync(Account account)
         {
             var user = new IdentityUser { Email = account.Email, UserName = account.Login };
             var result = await userManager.CreateAsync(user, account.Password);

@@ -2,6 +2,8 @@
 using BestInvest.API.BLL.Interfaces;
 using BestInvest.API.DAL.EF;
 using BestInvest.API.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BestInvest.API.BLL.Services
 {
@@ -16,7 +18,28 @@ namespace BestInvest.API.BLL.Services
             this.identityService = identityService;
         }
 
-        public async Task<bool> Create(AccountDTO account)
+        public async Task<bool> ChangePasswordAsync(ClaimsPrincipal user, ChangePasswordDTO changePasswordDTO)
+        {
+            var currentUser = await identityService.GetCurrentUserAsync(user);
+            var newPassword = await identityService.ChangePasswordAsync(currentUser, changePasswordDTO);
+
+            var result = newPassword != null;
+            if (result)
+            {
+                var account = dbContext.Accounts
+                    .Where(a => a.Email == currentUser.Email)
+                    .FirstOrDefault();
+
+                account.Password = newPassword;
+
+                dbContext.Entry(account).State = EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+
+            return result;
+        }
+
+        public async Task<bool> CreateAsync(AccountDTO account)
         {
             if (dbContext.Accounts.Where(a => a.Email == account.Email).Any())
             {
@@ -38,7 +61,7 @@ namespace BestInvest.API.BLL.Services
                 LinkedIn = account.LinkedIn,
             };
 
-            var result = await identityService.CreateUserAsync(newAccount);
+            var result = await identityService.CreateAsync(newAccount);
             if (result)
             {
                 await dbContext.AddAsync(newAccount);

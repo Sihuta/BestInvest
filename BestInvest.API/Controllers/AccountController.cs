@@ -2,8 +2,6 @@
 using BestInvest.API.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace BestInvest.API.Controllers
 {
     [Route("api/[controller]")]
@@ -17,18 +15,30 @@ namespace BestInvest.API.Controllers
             this.accountService = accountService;
         }
 
-        // POST api/<AccountController>
         [HttpPost("register")]
         public async Task<IActionResult> Create([FromBody] AccountDTO account)
         {
             if (account == null)
             {
-                return BadRequest("Parameter 'account' is null");
+                return BadRequest($"Parameter '{nameof(account)}' is null");
             }
 
-            var res = await accountService.Create(account);
+            var res = await accountService.CreateAsync(account);
             return res ?
                 Ok() : BadRequest("User with such email already exists.");
+        }
+
+        [HttpPost("changePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
+        {
+            if (changePasswordDTO == null)
+            {
+                return BadRequest($"Parameter '{nameof(changePasswordDTO)}' is null");
+            }
+
+            var res = await accountService.ChangePasswordAsync(User, changePasswordDTO);
+            return res ?
+                Ok() : BadRequest("Something went wrong. Password hasn't been changed.");
         }
     }
 }
