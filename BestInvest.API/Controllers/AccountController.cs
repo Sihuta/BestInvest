@@ -1,5 +1,6 @@
 ﻿using BestInvest.API.BLL.DTO;
 using BestInvest.API.BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BestInvest.API.Controllers
@@ -29,6 +30,7 @@ namespace BestInvest.API.Controllers
         }
 
         [HttpPost("changePassword")]
+        [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
         {
             if (changePasswordDTO == null)

@@ -7,7 +7,7 @@ namespace BestInvest.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = "startuper")]
     public class StartuperController : ControllerBase
     {
         private readonly IStartuperService startuperService;
@@ -17,31 +17,24 @@ namespace BestInvest.API.Controllers
             this.startuperService = startuperService;
         }
 
-        // GET: api/<StartuperController>
         [HttpGet]
-        [Authorize(Policy = "startuper")]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<AccountDTO>> GetFullInfo()
         {
-            return new string[] { "value1", "value2" };
+            var accountFullInfo = await startuperService.GetFullInfoAsync(User);
+            return Ok(accountFullInfo);
         }
 
-        // GET api/<StartuperController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpPut]
+        public async Task<IActionResult> EditProfile([FromBody] AccountDTO account)
         {
-            return "value";
-        }
+            if (account == null)
+            {
+                return BadRequest($"Parameter '{nameof(account)}' is null");
+            }
 
-        // PUT api/<StartuperController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<StartuperController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            var res = await startuperService.UpdateAsync(User, account);
+            return res ?
+                Ok() : BadRequest("User with such email already exists.");
         }
     }
 }
