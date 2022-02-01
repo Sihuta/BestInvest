@@ -7,7 +7,7 @@ namespace BestInvest.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "startuper")]
+    [Authorize(Policy = "ForStartuper")]
     public class StartuperController : ControllerBase
     {
         private readonly IStartuperService startuperService;
@@ -34,7 +34,7 @@ namespace BestInvest.API.Controllers
 
             var res = await startuperService.UpdateAsync(User, account);
             return res ?
-                Ok() : BadRequest("User with such email already exists.");
+                Ok() : BadRequest("User with such email or login already exists.");
         }
     }
 }

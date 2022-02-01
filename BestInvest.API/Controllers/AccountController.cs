@@ -17,7 +17,7 @@ namespace BestInvest.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Create([FromBody] AccountDTO account)
+        public async Task<IActionResult> Register([FromBody] AccountDTO account)
         {
             if (account == null)
             {
@@ -26,7 +26,7 @@ namespace BestInvest.API.Controllers
 
             var res = await accountService.CreateAsync(account);
             return res ?
-                Ok() : BadRequest("User with such email already exists.");
+                Ok() : BadRequest("User with such email or login already exists.");
         }
 
         [HttpPost("changePassword")]

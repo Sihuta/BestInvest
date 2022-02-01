@@ -41,11 +41,6 @@ namespace BestInvest.API.BLL.Services
 
         public async Task<bool> CreateAsync(AccountDTO account)
         {
-            if (dbContext.Accounts.Where(a => a.Email == account.Email).Any())
-            {
-                return false;
-            }
-
             var newAccount = new Account()
             {
                 Login = account.Login,
@@ -64,8 +59,11 @@ namespace BestInvest.API.BLL.Services
             var result = await identityService.CreateAsync(newAccount);
             if (result)
             {
-                await dbContext.AddAsync(newAccount);
                 await dbContext.AddAsync(accountInfo);
+                await dbContext.SaveChangesAsync();
+
+                newAccount.AccountInfoId = accountInfo.Id;
+                await dbContext.AddAsync(newAccount);
                 await dbContext.SaveChangesAsync();
             }
 
