@@ -5,6 +5,7 @@ namespace BestInvest.API.DAL.Entities
     public class AccountInfo
     {
         public int Id { get; set; }
+        public int AccountId { get; set; }
 
         [Required]
         public string FullName { get; set; }

@@ -25,7 +25,7 @@ namespace BestInvest.API.BLL.Services
             return new AccountDTO()
             {
                 Id = account.Id,
-                AccountInfoId = account.AccountInfoId,
+                AccountInfoId = account.AccountInfo.Id,
                 
                 Login = account.Login,
                 Email = account.Email,
@@ -67,10 +67,9 @@ namespace BestInvest.API.BLL.Services
         private async Task<Account> GetCurrentUserAccountAsync(ClaimsPrincipal user)
         {
             var currentUser = await identityService.GetCurrentUserAsync(user);
-            var userEmail = currentUser.Email;
 
             return await dbContext.Accounts
-                .Where(a => a.Email == userEmail)
+                .Where(a => a.Login == currentUser.UserName)
                 .Include(a => a.AccountInfo)
                 .FirstOrDefaultAsync();
         }

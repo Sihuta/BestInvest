@@ -27,7 +27,7 @@ namespace BestInvest.API.BLL.Services
             if (result)
             {
                 var account = dbContext.Accounts
-                    .Where(a => a.Email == currentUser.Email)
+                    .Where(a => a.Login == currentUser.UserName)
                     .FirstOrDefault();
 
                 account.Password = newPassword;
@@ -48,22 +48,23 @@ namespace BestInvest.API.BLL.Services
                 Email = account.Email,
                 Role = account.Role,
             };
-            var accountInfo = new AccountInfo()
-            {
-                FullName = account.FullName,
-                DateOfBirth = account.DateOfBirth,
-                WorkingExperience = account.WorkingExperience,
-                LinkedIn = account.LinkedIn,
-            };
 
             var result = await identityService.CreateAsync(newAccount);
             if (result)
             {
-                await dbContext.AddAsync(accountInfo);
+                await dbContext.AddAsync(newAccount);
                 await dbContext.SaveChangesAsync();
 
-                newAccount.AccountInfoId = accountInfo.Id;
-                await dbContext.AddAsync(newAccount);
+                var accountInfo = new AccountInfo()
+                {
+                    FullName = account.FullName,
+                    DateOfBirth = account.DateOfBirth,
+                    WorkingExperience = account.WorkingExperience,
+                    LinkedIn = account.LinkedIn,
+                    AccountId = newAccount.Id
+                };
+
+                await dbContext.AddAsync(accountInfo);
                 await dbContext.SaveChangesAsync();
             }
 
