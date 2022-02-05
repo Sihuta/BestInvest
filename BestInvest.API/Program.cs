@@ -3,6 +3,7 @@ using BestInvest.API.BLL.Services;
 using BestInvest.API.DAL.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using BestInvest.API.BLL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,10 +42,14 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddTransient<AppDbContext>();
 builder.Services.AddTransient<IdentityService>();
+builder.Services.AddTransient<Mapper>();
+
 builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<IStartuperService, StartuperService>();
+builder.Services.AddTransient<IProjectService, ProjectService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<ITeamService, TeamService>();
 
 var app = builder.Build();
 
