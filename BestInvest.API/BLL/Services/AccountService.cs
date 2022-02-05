@@ -39,29 +39,30 @@ namespace BestInvest.API.BLL.Services
             return result;
         }
 
-        public async Task<bool> CreateAsync(AccountDTO account)
+        public async Task<bool> CreateAsync(AccountDTO accountDTO)
         {
-            var newAccount = new Account()
+            var account = new Account()
             {
-                Login = account.Login,
-                Password = account.Password,
-                Email = account.Email,
-                Role = account.Role,
+                Login = accountDTO.Login,
+                Password = accountDTO.Password,
+                Email = accountDTO.Email,
+                Role = accountDTO.Role,
             };
 
-            var result = await identityService.CreateAsync(newAccount);
+            var result = await identityService.CreateAsync(account);
             if (result)
             {
-                await dbContext.AddAsync(newAccount);
+                await dbContext.AddAsync(account);
                 await dbContext.SaveChangesAsync();
 
                 var accountInfo = new AccountInfo()
                 {
-                    FullName = account.FullName,
-                    DateOfBirth = account.DateOfBirth,
-                    WorkingExperience = account.WorkingExperience,
-                    LinkedIn = account.LinkedIn,
-                    AccountId = newAccount.Id
+                    FullName = accountDTO.FullName,
+                    DateOfBirth = accountDTO.DateOfBirth,
+                    WorkingExperience = accountDTO.WorkingExperience,
+                    LinkedIn = accountDTO.LinkedIn,
+
+                    AccountId = account.Id
                 };
 
                 await dbContext.AddAsync(accountInfo);
@@ -69,6 +70,33 @@ namespace BestInvest.API.BLL.Services
             }
 
             return result;
+        }
+
+        public async Task<AccountDTO> FindByLogin(string login)
+        {
+            var account = await dbContext.Accounts
+                .Include(a => a.AccountInfo)
+                .Where(a => a.Login == login)
+                .FirstOrDefaultAsync();
+
+            if (account == null)
+            {
+                return null;
+            }
+
+            return new AccountDTO()
+            {
+                Id = account.Id,
+                Email = account.Email,
+                Login = login,
+                Role = account.Role,
+
+                AccountInfoId = account.AccountInfo.Id,
+                DateOfBirth = account.AccountInfo.DateOfBirth,
+                FullName = account.AccountInfo.FullName,
+                LinkedIn = account.AccountInfo.LinkedIn,
+                WorkingExperience = account.AccountInfo.WorkingExperience
+            };
         }
     }
 }
