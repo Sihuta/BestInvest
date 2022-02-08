@@ -25,14 +25,14 @@ namespace BestInvest.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> EditProfile([FromBody] AccountDTO account)
+        public async Task<IActionResult> EditProfile([FromBody] AccountDTO accountDTO)
         {
-            if (account == null)
+            if (accountDTO == null)
             {
-                return BadRequest($"Parameter '{nameof(account)}' is null");
+                return BadRequest($"Parameter '{nameof(accountDTO)}' is null");
             }
 
-            var res = await startuperService.UpdateAsync(User, account);
+            var res = await startuperService.UpdateAsync(User, accountDTO);
             return res ?
                 Ok() : BadRequest("User with such email or login already exists.");
         }

@@ -7,6 +7,7 @@ namespace BestInvest.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService accountService;
@@ -16,21 +17,28 @@ namespace BestInvest.API.Controllers
             this.accountService = accountService;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] AccountDTO account)
+        [HttpGet("find/{login}")]
+        public async Task<ActionResult<AccountDTO>> FindByLogin(string login)
         {
-            if (account == null)
+            var accountFullInfo = await accountService.FindByLogin(login);
+            return Ok(accountFullInfo);
+        }
+
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody] AccountDTO accountDTO)
+        {
+            if (accountDTO == null)
             {
-                return BadRequest($"Parameter '{nameof(account)}' is null");
+                return BadRequest($"Parameter '{nameof(accountDTO)}' is null");
             }
 
-            var res = await accountService.CreateAsync(account);
+            var res = await accountService.CreateAsync(accountDTO);
             return res ?
                 Ok() : BadRequest("User with such email or login already exists.");
         }
 
         [HttpPost("changePassword")]
-        [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
         {
             if (changePasswordDTO == null)

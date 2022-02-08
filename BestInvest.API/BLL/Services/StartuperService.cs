@@ -38,26 +38,26 @@ namespace BestInvest.API.BLL.Services
             };
         }
 
-        public async Task<bool> UpdateAsync(ClaimsPrincipal user, AccountDTO account)
+        public async Task<bool> UpdateAsync(ClaimsPrincipal user, AccountDTO accountDTO)
         {
-            var result = await identityService.UpdateUserAsync(user, account.Email, account.Login);
+            var result = await identityService.UpdateUserAsync(user, accountDTO.Email, accountDTO.Login);
             if (!result)
             {
                 return false;
             }
             
-            var currentAccount = await GetCurrentUserAccountAsync(user);
-            var accountInfo = currentAccount.AccountInfo;
+            var account = await GetCurrentUserAccountAsync(user);
+            var accountInfo = account.AccountInfo;
 
-            currentAccount.Email = account.Email;
-            currentAccount.Login = account.Login;
+            account.Email = accountDTO.Email;
+            account.Login = accountDTO.Login;
 
-            accountInfo.DateOfBirth = account.DateOfBirth;
-            accountInfo.LinkedIn = account.LinkedIn;
-            accountInfo.WorkingExperience = account.WorkingExperience;
-            accountInfo.FullName = account.FullName;
+            accountInfo.DateOfBirth = accountDTO.DateOfBirth;
+            accountInfo.LinkedIn = accountDTO.LinkedIn;
+            accountInfo.WorkingExperience = accountDTO.WorkingExperience;
+            accountInfo.FullName = accountDTO.FullName;
 
-            dbContext.Entry(currentAccount).State = EntityState.Modified;
+            dbContext.Entry(account).State = EntityState.Modified;
             dbContext.Entry(accountInfo).State = EntityState.Modified;
             dbContext.SaveChanges();
 
