@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/BestInvest.API/.vs/BestInvest.API
+/.vs
+/BestInvest.API/bin/Debug/net6.0
+/BestInvest.API/obj
+/BestInvest.API/DAL/LocalDB
