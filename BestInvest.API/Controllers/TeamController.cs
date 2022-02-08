@@ -8,7 +8,7 @@ namespace BestInvest.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = "ForStartuper")]
     public class TeamController : ControllerBase
     {
         private readonly ITeamService teamService;

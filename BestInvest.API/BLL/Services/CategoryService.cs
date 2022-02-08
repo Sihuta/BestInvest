@@ -24,22 +24,18 @@ namespace BestInvest.API.BLL.Services
 
         public async Task<List<CategoryDTO>> GetByInvestorIdAsync(int id)
         {
-            var investorCategories = dbContext.InvestorCategories
+            return await dbContext.InvestorCategories
                 .Include(ic => ic.Category)
-                .Where(ic => ic.AccountId == id);
-
-            return await investorCategories
+                .Where(ic => ic.AccountId == id)
                 .Select(ic => new CategoryDTO { Id = ic.Category.Id, Name = ic.Category.Name})
                 .ToListAsync();
         }
 
         public async Task<List<CategoryDTO>> GetByProjectIdAsync(int id)
         {
-            var projectCategories = dbContext.ProjectCategories
+            return await dbContext.ProjectCategories
                 .Include(pc => pc.Category)
-                .Where(pc => pc.ProjectId == id);
-
-            return await projectCategories
+                .Where(pc => pc.ProjectId == id)
                 .Select(pc => new CategoryDTO { Id = pc.Category.Id, Name = pc.Category.Name })
                 .ToListAsync();
         }

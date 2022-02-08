@@ -7,7 +7,7 @@ namespace BestInvest.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = "ForStartuper")]
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService projectService;
@@ -18,7 +18,6 @@ namespace BestInvest.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "ForStartuper")]
         public async Task<IActionResult> Add([FromBody] ProjectDTO projectDTO)
         {
             if (projectDTO == null)
@@ -27,6 +26,25 @@ namespace BestInvest.API.Controllers
             }
 
             await projectService.CreateAsync(projectDTO);
+            return Ok();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ProjectDTO>> Get(int id)
+        {
+            var res = await projectService.GetAsync(id);
+            return Ok(res);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Edit([FromBody] ProjectDTO projectDTO)
+        {
+            if (projectDTO == null)
+            {
+                return BadRequest($"Parameter '{nameof(projectDTO)}' is null");
+            }
+
+            await projectService.UpdateAsync(projectDTO);
             return Ok();
         }
     }
