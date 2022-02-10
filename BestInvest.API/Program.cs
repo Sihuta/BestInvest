@@ -8,7 +8,7 @@ using BestInvest.API.BLL;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddMvc();
+//builder.Services.AddMvc();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(
@@ -50,6 +50,8 @@ builder.Services.AddTransient<IStartuperService, StartuperService>();
 builder.Services.AddTransient<IProjectService, ProjectService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<ITeamService, TeamService>();
+builder.Services.AddTransient<IDealService, DealService>();
+builder.Services.AddTransient<IChatService, ChatService>();
 
 var app = builder.Build();
 
@@ -72,9 +74,9 @@ app.UseAuthorization();
 
 app.UseCors();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapControllers();
+//});
 
 app.Run();
