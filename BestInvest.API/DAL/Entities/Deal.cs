@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BestInvest.API.BLL.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BestInvest.API.DAL.Entities
 {
@@ -13,7 +14,7 @@ namespace BestInvest.API.DAL.Entities
         public decimal MoneyCapital { get; set; }
 
         [Required]
-        public string State { get; set; }
+        public DealState State { get; set; }
 
         //
         public Account Account { get; set; }
