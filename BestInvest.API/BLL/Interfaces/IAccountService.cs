@@ -5,7 +5,8 @@ namespace BestInvest.API.BLL.Interfaces
 {
     public interface IAccountService
     {
-        Task<AccountDTO> FindByLogin(string login);
+        Task<AccountDTO> GetAsync(int id);
+        Task<AccountDTO> FindByLoginAsync(string login);
         Task<bool> CreateAsync(AccountDTO accountDTO);
         Task<bool> ChangePasswordAsync(ClaimsPrincipal user, ChangePasswordDTO changePasswordDTO);
     }

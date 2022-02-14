@@ -17,11 +17,22 @@ namespace BestInvest.API.Controllers
             this.accountService = accountService;
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AccountDTO>> Get(int id)
+        {
+            var res = await accountService.GetAsync(id);
+            return (res == null) ?
+                BadRequest("User not found.") :
+                Ok(res);
+        }
+
         [HttpGet("find/{login}")]
         public async Task<ActionResult<AccountDTO>> FindByLogin(string login)
         {
-            var accountFullInfo = await accountService.FindByLogin(login);
-            return Ok(accountFullInfo);
+            var res = await accountService.FindByLoginAsync(login);
+            return (res == null) ?
+                BadRequest("User not found.") :
+                Ok(res);
         }
 
         [HttpPost("register")]

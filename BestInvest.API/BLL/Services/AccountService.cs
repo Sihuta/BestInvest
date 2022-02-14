@@ -18,6 +18,34 @@ namespace BestInvest.API.BLL.Services
             this.identityService = identityService;
         }
 
+        public async Task<AccountDTO> GetAsync(int id)
+        {
+            var account = await dbContext.Accounts
+                .Include(a => a.AccountInfo)
+                .Where(a => a.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (account == null)
+            {
+                return null;
+            }
+
+            return new AccountDTO()
+            {
+                Id = account.Id,
+                AccountInfoId = account.AccountInfo.Id,
+
+                Login = account.Login,
+                Email = account.Email,
+                Role = account.Role,
+
+                FullName = account.AccountInfo.FullName,
+                DateOfBirth = account.AccountInfo.DateOfBirth,
+                LinkedIn = account.AccountInfo.LinkedIn,
+                WorkingExperience = account.AccountInfo.WorkingExperience,
+            };
+        }
+
         public async Task<bool> ChangePasswordAsync(ClaimsPrincipal user, ChangePasswordDTO changePasswordDTO)
         {
             var currentUser = await identityService.GetCurrentUserAsync(user);
@@ -72,7 +100,7 @@ namespace BestInvest.API.BLL.Services
             return result;
         }
 
-        public async Task<AccountDTO> FindByLogin(string login)
+        public async Task<AccountDTO> FindByLoginAsync(string login)
         {
             var account = await dbContext.Accounts
                 .Include(a => a.AccountInfo)
