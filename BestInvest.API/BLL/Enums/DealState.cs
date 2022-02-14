@@ -2,8 +2,9 @@
 {
     public enum DealState
     {
-        Started = 0,
-        Canceled = 1,
-        Completed = 2,
+        AddedToFavorites = 0,
+        Started = 1,
+        Canceled = 2,
+        Completed = 3,
     }
 }

@@ -4,6 +4,8 @@ namespace BestInvest.API.BLL.Interfaces
 {
     public interface IDealService
     {
+        Task<bool> CreateAsync(DealDTO dealDTO);
+        Task<bool> UpdateAsync(DealDTO dealDTO);
         Task<List<DealDTO>> GetAsync(int projectId);
     }
 }

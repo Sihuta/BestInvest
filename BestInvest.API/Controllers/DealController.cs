@@ -22,7 +22,33 @@ namespace BestInvest.API.Controllers
         public async Task<ActionResult<List<DealDTO>>> Get(int id)
         {
             var deals = await dealService.GetAsync(id);
-            return (deals == null) ? BadRequest() : Ok(deals);
+            return (deals == null) ?
+                BadRequest("Deals of the project are not found.") :
+                Ok(deals);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add([FromBody] DealDTO dealDTO)
+        {
+            if (dealDTO == null)
+            {
+                return BadRequest($"Parameter '{nameof(dealDTO)}' is null");
+            }
+
+            bool res = await dealService.CreateAsync(dealDTO);
+            return res ? Ok() : BadRequest();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Edit([FromBody] DealDTO dealDTO)
+        {
+            if (dealDTO == null)
+            {
+                return BadRequest($"Parameter '{nameof(dealDTO)}' is null");
+            }
+
+            bool res = await dealService.UpdateAsync(dealDTO);
+            return res ? Ok() : BadRequest();
         }
     }
 }
