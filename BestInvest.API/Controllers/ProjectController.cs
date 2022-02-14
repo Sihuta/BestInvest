@@ -30,10 +30,13 @@ namespace BestInvest.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<ProjectDTO>> Get(int id)
         {
             var res = await projectService.GetAsync(id);
-            return Ok(res);
+            return (res == null) ?
+                BadRequest("Project not found.") :
+                Ok(res);
         }
 
         [HttpPut]
