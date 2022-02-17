@@ -18,28 +18,41 @@ namespace BestInvest.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ChatDTO>>> Get(int id)
+        public async Task<ActionResult<List<ChatDTO>>> GetAll(int id)
         {
-            var chats = await chatService.GetAsync(id);
+            var chats = await chatService.GetAllAsync(id);
             return (chats == null) ?
                 BadRequest("Chats of the project are not found.") :
                 Ok(chats);
         }
 
-        [HttpGet("{investorId}")]
-        public async Task<ActionResult<ChatDTO>> Get(int id, int investorId)
+        [HttpGet("{chatId}")]
+        public async Task<ActionResult<ChatDTO>> Get(int chatId)
         {
-            var chat = await chatService.GetAsync(id, investorId);
+            var chat = await chatService.GetAsync(chatId);
             return (chat == null) ?
-                BadRequest("Chats if the project with such investor are not found.") :
+                BadRequest("Chat not found.") :
                 Ok(chat);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Add([FromBody] ChatDTO chatDTO)
+        {
+            await chatService.CreateAsync(chatDTO);
+            return Ok();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Edit([FromBody] ChatDTO chatDTO)
+        {
+            var res = await chatService.UpdateAsync(chatDTO);
+            return res ? Ok() : BadRequest("Chat not found");
+        }
 
         [HttpDelete("{chatId}")]
         public async Task<ActionResult<List<ChatDTO>>> Delete(int chatId)
         {
-            var res = await chatService.DeleteAsync(chatId);
+            var res = await chatService.RemoveAsync(chatId);
             return res ? Ok() : BadRequest("Chat not found");
         }
     }
