@@ -50,5 +50,12 @@ namespace BestInvest.API.Controllers
             bool res = await dealService.UpdateAsync(dealDTO);
             return res ? Ok() : BadRequest();
         }
+
+        [HttpDelete("dealId")]
+        public async Task<IActionResult> Delete(int dealId)
+        {
+            bool res = await dealService.RemoveAsync(dealId);
+            return res ? Ok() : BadRequest("Deal not found.");
+        }
     }
 }

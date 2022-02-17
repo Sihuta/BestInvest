@@ -6,6 +6,7 @@ namespace BestInvest.API.BLL.Interfaces
     {
         Task<bool> CreateAsync(DealDTO dealDTO);
         Task<bool> UpdateAsync(DealDTO dealDTO);
+        Task<bool> RemoveAsync(int dealId);
         Task<List<DealDTO>> GetAsync(int projectId);
     }
 }

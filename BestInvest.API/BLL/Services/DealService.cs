@@ -45,6 +45,20 @@ namespace BestInvest.API.BLL.Services
             return true;
         }
 
+        public async Task<bool> RemoveAsync(int dealId)
+        {
+            var deal = await dbContext.Deals.FindAsync(dealId);
+            if (deal == null)
+            {
+                return false;
+            }
+
+            dbContext.Deals.Remove(deal);
+            await dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<List<DealDTO>> GetAsync(int projectId)
         {
             return mapper.Map<Deal, DealDTO>(
