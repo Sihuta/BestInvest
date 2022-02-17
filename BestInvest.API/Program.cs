@@ -52,6 +52,7 @@ builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<ITeamService, TeamService>();
 builder.Services.AddTransient<IDealService, DealService>();
 builder.Services.AddTransient<IChatService, ChatService>();
+builder.Services.AddTransient<IMessageService, MessageService>();
 
 var app = builder.Build();
 
